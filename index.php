@@ -94,7 +94,35 @@ i {
   padding: 10px;
   scroll-behavior: smooth;
 }
-    </style>
+
+       /* Perkecil ukuran gambar */
+       .carousel-item img {
+            height: 300px; /* Tinggi gambar maksimal */
+            object-fit: contain; /* Sesuaikan gambar tanpa memotong */
+        }
+
+
+        .carousel-control-next-icon::after {
+            content: ''; /* Hapus ikon default */
+        }
+
+        .carousel-control-prev-icon::before,
+        .carousel-control-next-icon::before {
+            color: black; /* Warna panah */
+            font-size: 30px; /* Ukuran panah */
+            font-weight: bold; /* Ketebalan panah */
+            display: inline-block;
+            text-align: center;
+        }
+
+        .carousel-control-prev-icon::before {
+            content: '‹'; /* Panah kiri */
+        }
+
+        .carousel-control-next-icon::before {
+            content: '›'; /* Panah kanan */
+        }
+  </style>
 
 
   </head>
@@ -327,6 +355,58 @@ i {
         </div>
       </div>
     </section>
+
+    <section id="">
+    <div class="container" style="padding-top: 100px">
+    <div class="title text-center mb-5">
+    <?php
+      // Koneksi ke database
+      include "koneksi.php";
+
+      // Query untuk mengambil data gambar
+      $sql = "SELECT gambar FROM article";
+      $result = $conn->query($sql);
+    ?>
+    
+    <div class="container mt-5">
+        <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <?php
+                $activeClass = "active"; // Untuk gambar pertama di slider
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        if (!empty($row['gambar']) && file_exists('img/' . $row['gambar'])) {
+                            echo '<div class="carousel-item ' . $activeClass . '">';
+                            echo '<img src="img/' . $row['gambar'] . '" class="d-block w-100" alt="' . '">';
+                            echo '<div class="carousel-caption d-none d-md-block">';
+                            echo '</div>';
+                            echo '</div>';
+                            $activeClass = ""; // Hapus active setelah gambar pertama
+                        }
+                    }
+                } else {
+                    echo "<div class='carousel-item active'>";
+                    echo "<p class='text-center'>Belum ada gambar dalam galeri.</p>";
+                    echo "</div>";
+                }
+                ?>
+            </div>
+            <!-- Tombol Navigasi -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
+                <span class=" "><</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
+                <span class="">></span>
+            </button>
+        </div>
+    </div>
+    </div>
+    </section>
+
+
+
+
+
     <section id="schedule">
       <div class="container mt-4" style="padding-top: 100px">
         <div class="title text-center mb-5">
